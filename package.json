@@ -1,51 +1,58 @@
 {
-    "name": "n8n-nodes-comdirect",
-    "version": "0.1.0",
-    "description": "",
-    "license": "MIT",
-    "homepage": "",
-    "keywords": [
-        "n8n-community-node-package"
-    ],
-    "author": {
-        "name": "Garrit Franke",
-        "email": "garrit@slashdev.space"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/<...>/n8n-nodes-<...>.git"
-    },
-   "scripts": {
+	"name": "n8n-nodes-comdirect",
+	"version": "0.1.0",
+	"description": "n8n community node for the comdirect REST API (accounts, depots, PostBox documents)",
+	"license": "MIT",
+	"homepage": "https://github.com/garritfra/n8n-nodes-comdirect",
+	"keywords": [
+		"n8n-community-node-package",
+		"comdirect",
+		"banking",
+		"brokerage",
+		"finance"
+	],
+	"author": {
+		"name": "Garrit Franke",
+		"email": "garrit@slashdev.space"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/garritfra/n8n-nodes-comdirect.git"
+	},
+	"scripts": {
 		"build": "n8n-node build",
 		"build:watch": "tsc --watch",
 		"dev": "n8n-node dev",
 		"lint": "n8n-node lint",
-        "lint:fix": "n8n-node lint --fix",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "jest",
 		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
 	},
-    "files": [
-        "dist"
-    ],
-    "n8n": {
-        "n8nNodesApiVersion": 1,
-        "strict": true,
-        "credentials": [
-            "dist/credentials/GithubIssuesApi.credentials.js",
-            "dist/credentials/GithubIssuesOAuth2Api.credentials.js"
-        ],
-        "nodes": [
-            "dist/nodes/GithubIssues/GithubIssues.node.js"
-        ]
-    },
-    "devDependencies": {
-        "@n8n/node-cli": "*",
-        "eslint": "9.32.0",
-        "prettier": "3.6.2",
-        "release-it": "^19.0.4",
-        "typescript": "5.9.2"
-    },
-    "peerDependencies": {
-        "n8n-workflow": "*"
-    }
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/ComdirectApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Comdirect/Comdirect.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "*",
+		"@types/jest": "^29.5.14",
+		"eslint": "9.32.0",
+		"jest": "^29.7.0",
+		"prettier": "3.6.2",
+		"release-it": "^19.0.4",
+		"ts-jest": "^29.4.9",
+		"typescript": "5.9.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
 }

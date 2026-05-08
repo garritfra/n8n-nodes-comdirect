@@ -1,14 +1,14 @@
 # n8n-nodes-comdirect
 
-This is an n8n community node. It lets you use GitHub Issues in your n8n workflows.
+This is an n8n community node. It lets you read accounts, depots and PostBox documents from [comdirect](https://www.comdirect.de/) in your n8n workflows.
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/sustainable-use-license/) workflow automation platform.
+
 
 [Installation](#installation)
 [Operations](#operations)
 [Credentials](#credentials)
 [Compatibility](#compatibility)
-[Usage](#usage)
 [Resources](#resources)
 
 ## Installation
@@ -17,57 +17,50 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
-- Issues
-    - Get an issue
-    - Get many issues in a repository
-    - Create a new issue
-- Issue Comments
-    - Get many issue comments
+- **Account**
+	- Get Balance — single account by ID
+	- Get Many Balances — all linked accounts
+	- Get Many Transactions — with date and direction filters, paged
+- **Depot**
+	- Get Many — list all depots
+	- Get Many Positions — positions held in a depot
+	- Get Position — single position by depot + position ID
+	- Get Many Transactions — with WKN/ISIN and date filters, paged
+- **Document** (PostBox)
+	- Get Many — list documents
+	- Get — download a single document as binary PDF
+
+Order placement, quote requests, instrument lookup and aggregated reports are out of scope for v0.1.
 
 ## Credentials
 
-You can use either access token or OAuth2 to use this node.
+This node uses a single **comdirect API** credential.
 
-### Access token
+### Prerequisites
 
-1. Open your GitHub profile [Settings](https://github.com/settings/profile).
-2. In the left navigation, select [Developer settings](https://github.com/settings/apps).
-3. In the left navigation, under Personal access tokens, select Tokens (classic).
-4. Select Generate new token > Generate new token (classic).
-5. Enter a descriptive name for your token in the Note field, like n8n integration.
-6. Select the Expiration you'd like for the token, or select No expiration.
-7. Select Scopes for your token. For most of the n8n GitHub nodes, add the `repo` scope.
-    - A token without assigned scopes can only access public information.
-8. Select Generate token.
-9. Copy the token.
+1. **Register for API access** at [comdirect's developer portal](https://www.comdirect.de/cms/kontakt-zugaenge-api.html). comdirect issues you a personal `client_id` and `client_secret`.
+2. **Activate photoTAN-Push** on your comdirect account. This node only supports photoTAN-Push because it's the only TAN method that doesn't require typing a code mid-flow. SMS-TAN and manual photoTAN are not supported.
 
-Refer to [Creating a personal access token (classic)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic) for more information. Refer to Scopes for OAuth apps for more information on GitHub scopes.
+### Setup
 
-![Generated Access token in GitHub](https://docs.github.com/assets/cb-17251/mw-1440/images/help/settings/personal-access-tokens.webp)
+In n8n, create a new **comdirect API** credential with:
 
-### OAuth2
+- **Client ID** / **Client Secret** — from the developer portal
+- **Zugangsnummer** — your 8-digit comdirect customer number
+- **PIN** — your 6-digit online-banking PIN
 
-If you're self-hosting n8n, create a new GitHub [OAuth app](https://docs.github.com/en/apps/oauth-apps):
+When you save the credential, comdirect sends a photoTAN-Push notification to your phone. **Open the comdirect photoTAN app and approve the request within ~50 seconds.** Once approved, the credential persists the resulting session tokens and your subsequent workflow runs are unattended.
 
-1. Open your GitHub profile [Settings](https://github.com/settings/profile).
-2. In the left navigation, select [Developer settings](https://github.com/settings/apps).
-3. In the left navigation, select OAuth apps.
-4. Select New OAuth App.
-    - If you haven't created an app before, you may see Register a new application instead. Select it.
-5. Enter an Application name, like n8n integration.
-6. Enter the Homepage URL for your app's website.
-7. If you'd like, add the optional Application description, which GitHub displays to end-users.
-8. From n8n, copy the OAuth Redirect URL and paste it into the GitHub Authorization callback URL.
-9. Select Register application.
-10. Copy the Client ID and Client Secret this generates and add them to your n8n credential.
+### Refresh window
 
-Refer to the [GitHub Authorizing OAuth apps documentation](https://docs.github.com/en/apps/oauth-apps/using-oauth-apps/authorizing-oauth-apps) for more information on the authorization process.
+comdirect's session tokens have a sliding 20-minute idle expiry: every authenticated request resets the timer. Workflows that fire more often than every 20 minutes will never trigger a re-bootstrap. If the window does lapse (long idle period, n8n restart with stale tokens, etc.), the node will surface a clear error — re-open and re-save the credential to re-authenticate via photoTAN-Push.
 
 ## Compatibility
 
-Compatible with n8n@1.60.0 or later
+Compatible with n8n 1.60.0 or later.
 
 ## Resources
 
-* [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
-* [GitHub API docs](https://docs.github.com/en/rest/issues)
+- [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+- [comdirect REST API portal](https://www.comdirect.de/cms/kontakt-zugaenge-api.html)
+- [comdirect REST API specification (PDF)](https://kunde.comdirect.de/cms/media/comdirect_REST_API_Dokumentation.pdf)
