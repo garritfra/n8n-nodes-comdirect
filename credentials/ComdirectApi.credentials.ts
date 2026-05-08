@@ -1,3 +1,4 @@
+import { sleep } from 'n8n-workflow';
 import type {
 	IAuthenticateGeneric,
 	ICredentialDataDecryptedObject,
@@ -134,12 +135,6 @@ export class ComdirectApi implements ICredentialType {
 				body: parsedBody,
 			};
 		};
-
-		const sleep = (ms: number): Promise<void> =>
-			new Promise((resolve) => {
-				// eslint-disable-next-line @n8n/community-nodes/no-restricted-globals
-				setTimeout(resolve, ms);
-			});
 
 		const tokens = await runAuthFlow(
 			http,
